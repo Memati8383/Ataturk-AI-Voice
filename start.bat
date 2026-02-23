@@ -3,9 +3,18 @@ setlocal
 
 echo.
 echo ============================================
-echo   ATATURK AI BASLATICISI v2.1
+echo   ATATURK AI BASLATICISI v2.2
 echo ============================================
 echo.
+
+:: 0. Port Temizligi (8000 portunu kullanan varsa kapat)
+echo [BILGI] Port 8000 kontrol ediliyor...
+for /f "tokens=5" %%a in ('netstat -aon ^| findstr :8000') do (
+    echo [BILGI] PID %%a tarafindan kullanilan port temizleniyor...
+    taskkill /f /pid %%a >nul 2>&1
+)
+timeout /t 2 >nul
+
 
 :: 1. Python Sanal Ortam (venv) Kontrolu
 if not exist "venv\Scripts\python.exe" (
@@ -33,14 +42,29 @@ venv\Scripts\python.exe -m pip install fastapi uvicorn python-multipart requests
 
 :: 4. Cloudflared Tunnel Baslat (Arka planda start ile)
 echo [BILGI] Cloudflare Tunnel baslatiliyor...
-if exist cloudflared.exe (
-    start "Cloudflare Tunnel" cloudflared.exe tunnel --url http://localhost:8000
+if exist tools\cloudflared.exe (
+    start "Cloudflare Tunnel" tools\cloudflared.exe tunnel --url http://localhost:8000
 ) else (
-    echo [UYARI] cloudflared.exe bulunamadi! Internet erisimi olmayacak.
-    echo Lutfen cloudflared.exe'yi bu klasore indirin.
+    echo [UYARI] tools\cloudflared.exe bulunamadi! Internet erisimi olmayacak.
+    echo Lutfen cloudflared.exe'yi tools klasorune indirin.
 )
 
-:: 5. Uygulamayi Baslat
+
+
+:: 5. Ollama Kontrolu ve Baslatma
+echo [BILGI] Ollama kontrol ediliyor...
+where ollama >nul 2>nul
+if %errorlevel% equ 0 (
+    echo [BILGI] Ollama bulundu, servis baslatiliyor...
+    :: Arka planda baslat, halihazirda calisiyorsa hata vermez
+    start "Ollama Engine" /min ollama serve
+) else (
+    echo [UYARI] Ollama sistemde bulunamadi! Chat ozelligi calismayabilir.
+    echo Lutfen https://ollama.com adresinden indirin.
+)
+
+:: 6. Uygulamayi Baslat
+
 echo [BILGI] API Sunucusu baslatiliyor...
 echo.
 echo Lutfen acilan diger penceredeki (Cloudflare) linki kullanin.
