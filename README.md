@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Memati8383/Ataturk-AI-Voice/main/assets/banner.png" alt="Atatürk AI Voice Banner" width="100%" style="border-radius: 20px; margin-bottom: 20px;">
+<img src="icon.png" alt="Atatürk AI Voice Banner" width="100%" style="border-radius: 20px; margin-bottom: 20px;">
 
 # 🇹🇷 ATATÜRK AI VOICE
 
