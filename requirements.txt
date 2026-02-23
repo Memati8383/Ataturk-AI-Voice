@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+edge-tts
+rvc-python
+ollama
+torch
+pydantic
+requests
+customtkinter
+fairseq
